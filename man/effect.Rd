@@ -64,6 +64,18 @@ Andreas Kitsche
 }
 \examples{
 effect(pvalue=0.01, n1=10,n2=10)
+
+#comparison with the function WinProp
+#Example 5 from Hayter (2013)
+X <- c(76, 57, 71, 57, 65, 64, 65, 64, 70, 59)
+Y <- c(52, 53, 40, 58, 46)
+
+Test <- t.test(X,Y, alternative="two.sided", var.equal=TRUE)
+effect(pvalue=Test$p.value, n1=length(X),n2=length(Y))
+
+s <- sqrt(((var(X)*(length(X)-1))+ (var(Y)*(length(Y)-1)))/(length(c(X,Y))-2))
+WinProp(X=mean(X), Y=mean(Y), s=s, n1=length(X), n2=length(Y), alpha=0.05, c=0 , var.equal=TRUE, alternative="two.sided")
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

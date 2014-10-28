@@ -5,7 +5,7 @@
 Function to calculate sample size per group required to observe a relative effect of at least phi
 }
 \description{
-The function calculates the sample size per group required to observe  relative effect of at least phi with probability 1-beta, if te approximate sample size formula for the t-test is used. The sam,ple size is caluculated by iteratively searching for nrel according to Equation (2) in Kieser et al. (2013).
+The function calculates the sample size per group required to observe  relative effect of at least phi with probability 1-beta, if te approximate sample size formula for the t-test is used. The sample size is caluculated by iteratively searching for nrel according to Equation (2) in Kieser et al. (2013).
 }
 \usage{
 Nrel(nrel_start, phi, sigma, delta, beta)

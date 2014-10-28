@@ -82,7 +82,7 @@ Andreas Kitsche
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-#The following examples adopted from Hayter (2013).
+#The following examples are adopted from Hayter (2013).
 
 
 #########################################################################################
