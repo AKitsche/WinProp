@@ -5,7 +5,7 @@
 Function to calculate sample size per group required to observe a relative effect of at least phi
 }
 \description{
-The function calculates the sample size per group required to observe  relative effect of at least phi with probability 1-beta, if te approximate sample size formula for the t-test is used. The sample size is caluculated by iteratively searching for nrel according to Equation (2) in Kieser et al. (2013).
+The function calculates the sample size per group required to observe a relative effect of at least phi with probability 1-beta, if the approximate sample size formula for the t-test is used. The sample size is caluculated by iteratively searching for n according to Equation (2) in Kieser et al. (2013).
 }
 \usage{
 Nrel(nrel_start, phi, sigma, delta, beta)
@@ -37,9 +37,9 @@ type-II error rate
 %%  If it is a LIST, use
 \item{nrel}{per group sample size}
 \item{phi}{relative effect phi}
-\item{sigma}{standard error}
+\item{sigma}{standard deviation}
 \item{delta}{difference in expectation}
-\item{beta}{type II error rate}
+\item{beta}{type-II error rate}
 \item{power}{1-beta}
 }
 \references{
@@ -58,7 +58,7 @@ Andreas Kitsche
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-
+Nrel(nrel_start=100, phi=0.7, sigma=10, delta=-10, beta=0.1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

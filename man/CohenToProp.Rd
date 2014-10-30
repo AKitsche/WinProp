@@ -1,5 +1,5 @@
-\name{PropCohen}
-\alias{PropCohen}
+\name{CohenToProp}
+\alias{CohenToProp}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Function to convert Cohens effect size into Probability that X>Y and the corresponding odds ratio
@@ -8,7 +8,7 @@ Function to convert Cohens effect size into Probability that X>Y and the corresp
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-PropCohen(delta)
+CohenToProp(delta)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -43,6 +43,7 @@ Andreas Kitsche
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
+CohenToProp(4.5)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

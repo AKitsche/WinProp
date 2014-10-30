@@ -12,7 +12,7 @@
 #n1 - sample size of the first group
 #n2 - sample size of the second group
 
-effect <- function(pvalue, n1, n2, alternative=c("two.sided", "greater","less"), alpha=0.05){
+PvalueToWin <- function(pvalue, n1, n2, alternative=c("two.sided", "greater","less"), alpha=0.05){
   #checks
   if(alternative !=  "two.sided" & alternative !=  "greater" & alternative != "less") {
     stop("alternative must be either two.sided, greater or less")

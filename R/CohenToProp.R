@@ -3,7 +3,7 @@
 #arguments
 #delta - Cohens effect size
 
-PropCohen <- function(delta){
+CohenToProp <- function(delta){
   #checks
   if(!is.numeric(delta)) {
     stop("delta must be a numeric value")

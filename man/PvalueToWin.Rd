@@ -1,11 +1,11 @@
-\name{effect}
-\alias{effect}
+\name{PvalueToWin}
+\alias{PvalueToWin}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Function to convert a p-value and associate sample size into alternative efffect size measurements
 }
 \description{
-This function provides more meaningful measurement of the effect size associated with the p-value from the two-sample t-test. The focus is on the calculation of the relative effect defined by the probability that an outcome under the experimental treatment is better than an outcome under the control P(X>Y). For each effect size measure the corresponding 95\% confidence intervals are given
+This function provides more meaningful measurements of the effect size associated with the p-value from the two-sample t-test. The focus is on the calculation of the relative effect defined by the probability that an outcome under the experimental treatment is better than an outcome under the control P(X>Y). For each effect size measure the corresponding 95\% confidence intervals are given
 
 - Cohens effect size (mean(X)-mean(Y))/s
 
@@ -44,11 +44,9 @@ sample size of the second group
 %% ...
 }
 \references{
-A. J. Hayter (2013): Inferences on the difference between future observations for comparing two treatments, 
-Journal of Applied Statistics, 40:4, 887-900
+A. J. Hayter (2013): Inferences on the difference between future observations for comparing two treatments, Journal of Applied Statistics, 40:4, 887-900
 
-Richard H. Browne (2010) The t-Test p Value and Its Relationship to the Effect Size and P(X>Y), 
-The American Statistician, 64:1, 30-33
+Richard H. Browne (2010) The t-Test p Value and Its Relationship to the Effect Size and P(X>Y), The American Statistician, 64:1, 30-33
 }
 \author{
 Andreas Kitsche
@@ -63,7 +61,7 @@ Andreas Kitsche
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-effect(pvalue=0.01, n1=10,n2=10)
+PvalueToWin(pvalue=0.01, n1=10,n2=10)
 
 #comparison with the function WinProp
 #Example 5 from Hayter (2013)
@@ -71,10 +69,10 @@ X <- c(76, 57, 71, 57, 65, 64, 65, 64, 70, 59)
 Y <- c(52, 53, 40, 58, 46)
 
 Test <- t.test(X,Y, alternative="two.sided", var.equal=TRUE)
-effect(pvalue=Test$p.value, n1=length(X),n2=length(Y))
+PvalueToWin(pvalue=Test$p.value, n1=length(X),n2=length(Y))
 
 s <- sqrt(((var(X)*(length(X)-1))+ (var(Y)*(length(Y)-1)))/(length(c(X,Y))-2))
-WinProp(X=mean(X), Y=mean(Y), s=s, n1=length(X), n2=length(Y), alpha=0.05, c=0 , var.equal=TRUE, alternative="two.sided")
+WinPropSum(X=mean(X), Y=mean(Y), s=s, n1=length(X), n2=length(Y), alpha=0.05, c=0 , var.equal=TRUE, alternative="two.sided")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
