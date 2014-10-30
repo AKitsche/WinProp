@@ -1,7 +1,7 @@
 #Calculating the confidence interval for the Win Probability P(X-Y > c) according to Hayter 
 #Calculating the confidence interval for margin c with probability beta 
 
-#Refernces
+#References
 #A. J. Hayter (2013): Inferences on the difference between future observations for comparing two treatments, 
 #Journal of Applied Statistics, 40:4, 887-900
 
@@ -21,7 +21,7 @@
 #m1 - number of potential future observations from treatment 1
 #m2 - number of potential future observations from treatment 2
 
-WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE, s2=1, alternative=c("two.sided", "greater","less"), m1=1, m2=1){  
+WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE, s2=1, alternative=c("two.sided", "greater","less"), m1=1, m2=1){  
   #checks
   if(alternative !=  "two.sided" & alternative !=  "greater" & alternative != "less") {
     stop("alternative must be either two.sided, greater or less")
@@ -51,6 +51,54 @@ WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE,
   }
   
   alternative <- match.arg(alternative)
+  #calculating the t-Teststatistic
+  Diff <- X-Y#difference in means
+  if(var.equal==TRUE){
+    df <- n1+n2-2#degrees of freedom
+    TStat <- (Diff-c)/(s*sqrt((1/n1)+(1/n2)))
+  }else{
+    df <- ((s^2/n1)+(s2^2/n2))^2/(s^4/(n1^2*(n1-1))+s2^4/(n2^2*(n2-1)))
+    TStat <- (Diff-c)/sqrt((s^2/n1)+(s2^2/n2))
+  }
+  #calculating the p-value
+  alternative <- match.arg(alternative)
+  switch(alternative, 
+         two.sided = {
+           pvalue <- 2*(1-pt(q=abs(TStat), df=df))
+         },
+         greater = {
+           pvalue <- 1-pt(q=TStat, df=df)
+         },
+         less = {
+           pvalue <- pt(q=TStat, df=df)
+         })
+  #calculating the confidence interval and prediction intervals for the diference of means
+  switch(alternative, 
+         two.sided = {
+           tq <- qt(p=1-(alpha/2), df=df)#quantile of the t-distribution
+           #s <- sqrt(((var(x)*(n1-1))+ (var(y)*(n2-1)))/(n1+n2-2))
+           CIl <- Diff-(tq*sqrt((s^2/n1)+(s2^2/n2)))#lower confidence limit
+           CIu <- Diff+(tq*sqrt((s^2/n1)+(s2^2/n2)))#upper confidence limit
+           PIl <- Diff-(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#lower limit
+           PIu <- Diff+(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#upper limit
+         },
+         greater = {
+           tq <- qt(p=1-(alpha), df=df)#quantile of the t-distribution
+           #s <- sqrt(((var(x)*(n1-1))+ (var(y)*(n2-1)))/(n1+n2-2))
+           CIl <- Diff-(tq*sqrt((s^2/n1)+(s2^2/n2)))#lower confidence limit
+           CIu <- Inf#Diff+(tq*(s*sqrt((1/n1)+(1/n2))))#upper confidence limit
+           PIl <- Diff-(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#lower limit
+           PIu <- Inf#Diff+(tq*(sqrt(((var(x)*(n1-1))+ (var(y)*(n2-1)))/(n1+n2-2))*sqrt(2+(1/n1)+(1/n2))))#upper limit
+         },
+         less = {
+           tq <- qt(p=1-alpha, df=df)#quantile of the t-distribution
+           #s <- sqrt(((var(x)*(n1-1))+ (var(y)*(n2-1)))/(n1+n2-2))
+           CIl <- -Inf#Diff-(tq*(s*sqrt((1/n1)+(1/n2))))#lower confidence limit
+           CIu <- Diff+(tq*sqrt((s^2/n1)+(s2^2/n2)))#upper confidence limit
+           PIl <- -Inf#Diff-(tq*(sqrt(((var(x)*(n1-1))+ (var(y)*(n2-1)))/(n1+n2-2))*sqrt(2+(1/n1)+(1/n2))))#lower limit
+           PIu <- Diff+(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#upper limit
+         })
+  
   switch(alternative, 
          two.sided = {
            if(var.equal==TRUE){
@@ -58,6 +106,7 @@ WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE,
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
              deltal <- qt(p=alpha/2, df=df, ncp=Stat) 
              deltau <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
+             W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
              Wl <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
              Wu <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau)
              Cbetal <- (X-Y)- (qt(p=1-alpha/2, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
@@ -66,6 +115,7 @@ WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE,
              se <- sqrt((s^2/n1)+(s2^2/n2))/sqrt((s^2/m1)+(s2^2/m2))
              Stat <- (X-Y-c)/sqrt((s^2/m1) + (s2^2/m2))
              df <- ((s^2/n1)+(s2^2/n2))^2/(s^4/(n1^2*(n1-1))+s2^4/(n2^2*(n2-1)))
+             W <- pnorm((X-Y-c)/sqrt((s^2/m1) + (s2^2/m2)))
              Wl <- pnorm(Stat-qt(p=1-alpha/2, df=df)*se)
              Wu <- pnorm(Stat+qt(p=1-alpha/2, df=df)*se)
              Cbetal <- (X-Y)-(qt(p=1-alpha/2, df=df)*sqrt((s^2/n1)+(s2^2/n2)))-(qnorm(p=beta)*sqrt((s^2/m1) + (s2^2/m2)))
@@ -78,6 +128,7 @@ WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE,
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
              deltal <- qt(p=alpha, df=df, ncp=Stat) 
              #deltau <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
+             W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
              Wl <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
              Wu <- 1#pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau)
              Cbetal <- (X-Y)- (qt(p=1-alpha, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
@@ -86,6 +137,7 @@ WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE,
              se <- sqrt((s^2/n1)+(s2^2/n2))/sqrt((s^2/m1)+(s2^2/m2))
              Stat <- (X-Y-c)/sqrt((s^2/m1) + (s2^2/m2))
              df <- ((s^2/n1)+(s2^2/n2))^2/(s^4/(n1^2*(n1-1))+s2^4/(n2^2*(n2-1)))
+             W <- pnorm((X-Y-c)/sqrt((s^2/m1) + (s2^2/m2)))
              Wl <- pnorm(Stat-qt(p=1-alpha, df=df)*se)
              Wu <- 1#dnorm(Stat+qt(p=alpha/2, df=df)*se)
              Cbetal <- (X-Y)-(qt(p=1-alpha, df=df)*sqrt((s^2/n1)+(s2^2/n2)))-(qnorm(p=beta)*sqrt((s^2/m1) + (s2^2/m2)))
@@ -98,6 +150,7 @@ WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE,
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
              #deltal <- qt(p=alpha/2, df=df, ncp=Stat) 
              deltau <- qt(p=1-alpha, df=df, ncp=Stat) 
+             W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
              Wl <- 0#pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
              Wu <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau)
              Cbetal <- -Inf#(X-Y)- (qt(p=1-alpha/2, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
@@ -106,15 +159,33 @@ WinProp <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TRUE,
              se <- sqrt((s^2/n1)+(s2^2/n2))/sqrt((s^2/m1)+(s2^2/m2))
              Stat <- (X-Y-c)/sqrt((s^2/m1) + (s2^2/m2))
              df <- ((s^2/n1)+(s2^2/n2))^2/(s^4/(n1^2*(n1-1))+s2^4/(n2^2*(n2-1)))
+             W <- pnorm((X-Y-c)/sqrt((s^2/m1) + (s2^2/m2)))
              Wl <- 0#dnorm(Stat-qt(p=alpha/2, df=df)*se)
              Wu <- pnorm(Stat+qt(p=1-alpha, df=df)*se)
              Cbetal <- -Inf#(X-Y)-(qt(p=1-alpha/2, df=df)*sqrt((s^2/n1)+(s2^2/n2)))-(qnorm(p=beta)*sqrt((s^2/m1) + (s2^2/m2)))
              Cbetau <- (X-Y)+(qt(p=1-alpha, df=df)*sqrt((s^2/n1)+(s2^2/n2)))-(qnorm(p=beta)*sqrt((s^2/m1) + (s2^2/m2)))
            }
          })
-  
-  return(list(Wl=Wl,
-              Wu=Wu,
-              Cbetal=Cbetal,
-              Cbetau=Cbetau))
+  #calculating the odds W/(1-W) and corresponding confidence interval
+  Phi <- W/(1-W)
+  Phil <- Wl/(1-Wl)
+  Phiu <- Wu/(1-Wu)
+  out <- list(Diff=Diff,
+              TStat=TStat,
+              pvalue=pvalue,
+              df=df,
+              CI = list(CIl=CIl,
+                        CIu=CIu),
+              PI = list(PIl=PIl,
+                        PIu=PIu),
+              W=list(W=W,
+                     Wl=Wl,
+                     Wu=Wu),
+              Cbeta=list(Cbetal=Cbetal,
+                         Cbetau=Cbetau),
+              Phi = list(Phi=Phi,
+                         Phil=Phil,
+                         Phiu=Phiu))
+  class(out) <- "winprop"
+  out
 }

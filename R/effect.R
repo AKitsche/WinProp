@@ -53,8 +53,10 @@ effect <- function(pvalue, n1, n2, alternative=c("two.sided", "greater","less"),
   }
   switch(alternative, 
          two.sided = {
-           lambdau <- uniroot(BoundLambda, c(-10,10), df=df, cl=alpha/2, tobs=tobs)$root#upper 95% confidence limit of lambda
-           lambdal <- uniroot(BoundLambda, c(-10,10), df=df, cl=1-alpha/2, tobs=tobs)$root#lower 95% confidence limit of lambda
+           #lambdau <- uniroot(BoundLambda, c(-100,100), df=df, cl=alpha/2, tobs=tobs)$root#upper 95% confidence limit of lambda
+           #lambdal <- uniroot(BoundLambda, c(-100,100), df=df, cl=1-alpha/2, tobs=tobs)$root#lower 95% confidence limit of lambda
+           lambdau <- qt(p=1-alpha/2, df=df, ncp=tobs)#upper 95% confidence limit of lambda
+           lambdal <- qt(p=alpha/2, df=df, ncp=tobs)#lower 95% confidence limit of lambda
            #calculating the confidence limits on delta
            deltal <- lambdal*sqrt((1/n1)+(1/n2))
            deltau <- lambdau*sqrt((1/n1)+(1/n2))
@@ -69,8 +71,10 @@ effect <- function(pvalue, n1, n2, alternative=c("two.sided", "greater","less"),
            Psiu <- Wu/(1-Wu)
          },
          greater = {
-           lambdau <- NA#uniroot(BoundLambda, c(-10,10), df=df, cl=1-alpha/2, tobs=tobs)$root#upper 95% confidence limit of delta
-           lambdal <- uniroot(BoundLambda, c(-10,10), df=df, cl=1-alpha, tobs=tobs)$root#lower 95% confidence limit of delta
+           #lambdau <- NA#uniroot(BoundLambda, c(-10,10), df=df, cl=1-alpha/2, tobs=tobs)$root#upper 95% confidence limit of delta
+           #lambdal <- uniroot(BoundLambda, c(-100,100), df=df, cl=1-alpha, tobs=tobs)$root#lower 95% confidence limit of delta
+           lambdau <- 1#qt(p=1-alpha/2, df=df, ncp=tobs)#upper 95% confidence limit of lambda
+           lambdal <- qt(p=alpha, df=df, ncp=tobs)#lower 95% confidence limit of lambda
            #calculating the confidence limits on delta
            deltal <- lambdal*sqrt((1/n1)+(1/n2))
            deltau <- NA#lambdau*sqrt((1/n1)+(1/n2))
@@ -85,8 +89,10 @@ effect <- function(pvalue, n1, n2, alternative=c("two.sided", "greater","less"),
            Psiu <- NA#Wu/(1-Wu)
          },
          less = {
-           lambdau <- uniroot(BoundLambda, c(-10,10), df=df, cl=alpha, tobs=tobs)$root#upper 95% confidence limit of delta
-           lambdal <- NA#uniroot(BoundLambda, c(-10,10), df=df, cl=alpha, tobs=tobs)$root#lower 95% confidence limit of delta
+           #lambdau <- uniroot(BoundLambda, c(-100,100), df=df, cl=alpha, tobs=tobs)$root#upper 95% confidence limit of delta
+           #lambdal <- NA#uniroot(BoundLambda, c(-10,10), df=df, cl=alpha, tobs=tobs)$root#lower 95% confidence limit of delta
+           lambdau <- qt(p=1-alpha, df=df, ncp=tobs)#upper 95% confidence limit of lambda
+           lambdal <- 0#qt(p=alpha/2, df=df, ncp=tobs)#lower 95% confidence limit of lambda
            #calculating the confidence limits on delta
            deltal <- NA#lambdal*sqrt((1/n1)+(1/n2))
            deltau <- lambdau*sqrt((1/n1)+(1/n2))

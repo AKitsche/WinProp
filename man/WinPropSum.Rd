@@ -1,16 +1,16 @@
-\name{WinProp}
-\alias{WinProp}
+\name{WinPropSum}
+\alias{WinPropSum}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Confidence interval for Win Probability
+Confidence Interval for Win Probability using Summary data
 }
 \description{
-This function calculates the confidence interval for a Win Probability and the confidence interval for the the threshold c 
+This function calculates the Win Probability and the corresponding confidence interval from some summary statistics (mean of the groups, standard deviation and sample size)
 }
 \usage{
-WinProp(X, Y, s, n1, n2, alpha = 0.05, beta = 0.95, 
-        c = 0, var.equal = TRUE, s2 = 1, 
-        alternative = c("two.sided", "greater", "less"), m1 = 1, m2 = 1)
+WinPropSum(X, Y, s, n1, n2, alpha = 0.05, beta = 0.95, 
+c = 0, var.equal = TRUE, s2 = 1, 
+alternative = c("two.sided", "greater", "less"), m1 = 1, m2 = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,7 +35,7 @@ sample size of the second group
 type-I error rate
 }
   \item{beta}{
-hance that the first group is different from the second group
+chance that the first group is different from the second group
 }
   \item{c}{
 value c of interest, WinProp(c) directly assesses the probability that the difference between potential future single observations will be at least that value
@@ -47,7 +47,7 @@ specifies if homogeneous variances between the two groups is assumed
 standard deviation of the second group, if var.equal=FALSE
 }
   \item{alternative}{
-pecifies the direction of the hypothesis
+specifies the direction of the hypothesis
 }
   \item{m1}{
 number of potential future observations from treatment 1
@@ -57,14 +57,27 @@ number of potential future observations from treatment 2
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+This function is used internally in the function \code{WinPropRaw} after the corresponding summary statistics are claculated.
 }
 \value{
-List of
-\item{Wl}{lower confidence limit of the Win Probability}
-\item{Wu}{upper confidence limit of the Win Probability}
-\item{Cbetal}{lower confidence limit of the threshold c}
-\item{Cbetau}{upper confidence limit of the threshold c}
+A list with class "winprop" containing the following components:
+\item{pvalue}{p-value associated with the two-sample t-test}
+\item{n1}{sample size of the first group}
+\item{n1}{sample size of the second group}
+\item{delta}{observed Cohens effect size (mean(x)-mean(y))/s and its corresponding confidence interval}
+\item{lambda}{observed non-centrality parameter and its corresponding confidence interval}
+\item{W}{relative effect P(X>Y) and its corresponding confidence intervals}
+\item{Psi}{Odds of X being greater than Y W/(1-W) and its corresponding confidence interval}
+a list with class \code{winprop} containing the following components:
+\item{Diff}{Difference in means}
+\item{TStat}{the value of the t-statistic}
+\item{pvalue}{the p-value for the t-test}
+\item{df}{the degrees of freedom for the t-statistic}
+\item{CI}{a confidence interval for the mean appropriate to the specified alternative hypothesis}
+\item{PI}{a predicition interval for the difference in means}
+\item{W}{Win Probability and corresponding confidence interval}
+\item{Cbeta}{confidence interval for the threshold c}
+\item{Phi}{odds W/(1-W) and corresponding confidence interval}
 }
 \references{
 A. J. Hayter (2013): Inferences on the difference between future observations for comparing two treatments, Journal of Applied Statistics, 40:4, 887-900
@@ -79,7 +92,7 @@ Andreas Kitsche
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{WinPropSum}}
 }
 \examples{
 #The following examples are adopted from Hayter (2013).
@@ -118,15 +131,6 @@ WinProp(X=25, Y=10, s=10, n1=8, n2=8, alpha=0.05, c=-15, alternative="two.sided"
 #s=10
 WinProp(X=25, Y=10, s=10, n1=32, n2=32, alpha=0.05, c=-15, alternative="two.sided", m1=1, m2=1)
 
-#########################################################################################
-#############                Example 5           ########################################
-#########################################################################################
-X <- c(76, 57, 71, 57, 65, 64, 65, 64, 70, 59)
-Y <- c(52, 53, 40, 58, 46)
-
-t.test(X,Y, alternative="greater")
-WinProp(X=mean(X), Y=mean(Y), s=sd(X), n1=length(X), n2=length(Y), alpha=0.05, c=0, s2=sd(Y), var.equal=FALSE, alternative="greater")
-
 
 #########################################################################################
 #############                Example 6           ########################################
@@ -136,7 +140,6 @@ WinProp(X=mean(X), Y=mean(Y), s=sd(X), n1=length(X), n2=length(Y), alpha=0.05, c
 #Y=-0.4
 #s=5.26
 WinProp(X=3.9, Y=-0.4, s=5.26, n1=9, n2=9, alpha=0.05, c=0, var.equal=TRUE, alternative="two.sided", m1=1, m2=1)
-
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
