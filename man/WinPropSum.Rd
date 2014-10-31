@@ -68,7 +68,6 @@ A list with class "winprop" containing the following components:
 \item{lambda}{observed non-centrality parameter and its corresponding confidence interval}
 \item{W}{relative effect P(X>Y) and its corresponding confidence intervals}
 \item{Psi}{Odds of X being greater than Y W/(1-W) and its corresponding confidence interval}
-a list with class \code{winprop} containing the following components:
 \item{Diff}{Difference in means}
 \item{TStat}{the value of the t-statistic}
 \item{pvalue}{the p-value for the t-test}

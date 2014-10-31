@@ -64,7 +64,6 @@ A list with class "winprop" containing the following components:
 \item{lambda}{observed non-centrality parameter and its corresponding confidence interval}
 \item{W}{relative effect P(X>Y) and its corresponding confidence intervals}
 \item{Psi}{Odds of X being greater than Y W/(1-W) and its corresponding confidence interval}
-a list with class \code{winprop} containing the following components:
 \item{Diff}{Difference in means}
 \item{TStat}{the value of the t-statistic}
 \item{pvalue}{the p-value for the t-test}
@@ -100,7 +99,7 @@ X <- c(76, 57, 71, 57, 65, 64, 65, 64, 70, 59)
 Y <- c(52, 53, 40, 58, 46)
 
 
-WinPropRaw(X=X, Y=Y, s=sd(X), alpha=0.05, c=0, s2=sd(Y), var.equal=FALSE, alternative="greater")
+WinPropRaw(X=X, Y=Y, alpha=0.05, c=0, var.equal=FALSE, alternative="greater", m1=1, m2=1)
 
 
 }
