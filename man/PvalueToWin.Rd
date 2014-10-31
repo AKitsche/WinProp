@@ -27,6 +27,12 @@ sample size of the first group
   \item{n2}{
 sample size of the second group
 }
+  \item{alternative}{
+  a character string specifying the alternative hypothesis, must be one of "two.sided", "greater" or "less"
+  }
+  \item{alpha}{
+  type-I error rate
+  }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -61,7 +67,7 @@ Andreas Kitsche
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-PvalueToWin(pvalue=0.01, n1=10,n2=10)
+PvalueToWin(pvalue=0.01, n1=10,n2=10, alternative="two.sided", alpha=0.05)
 
 #comparison with the function WinProp
 #Example 5 from Hayter (2013)
@@ -69,7 +75,7 @@ X <- c(76, 57, 71, 57, 65, 64, 65, 64, 70, 59)
 Y <- c(52, 53, 40, 58, 46)
 
 Test <- t.test(X,Y, alternative="two.sided", var.equal=TRUE)
-PvalueToWin(pvalue=Test$p.value, n1=length(X),n2=length(Y))
+PvalueToWin(pvalue=Test$p.value, n1=length(X),n2=length(Y), alternative="two.sided", alpha=0.05)
 
 s <- sqrt(((var(X)*(length(X)-1))+ (var(Y)*(length(Y)-1)))/(length(c(X,Y))-2))
 WinPropSum(X=mean(X), Y=mean(Y), s=s, n1=length(X), n2=length(Y), alpha=0.05, c=0 , var.equal=TRUE, alternative="two.sided")
