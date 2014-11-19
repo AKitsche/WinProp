@@ -99,7 +99,7 @@ X <- c(76, 57, 71, 57, 65, 64, 65, 64, 70, 59)
 Y <- c(52, 53, 40, 58, 46)
 
 
-WinPropRaw(X=X, Y=Y, alpha=0.05, c=0, var.equal=FALSE, alternative="greater", m1=1, m2=1)
+WinPropRaw(x=X, y=Y, alpha=0.05, c=0, var.equal=FALSE, alternative="greater", m1=1, m2=1)
 
 
 }

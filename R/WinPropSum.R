@@ -53,6 +53,7 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
   alternative <- match.arg(alternative)
   #calculating the t-Teststatistic
   Diff <- X-Y#difference in means
+  Cohen <- Diff/s
   if(var.equal==TRUE){
     df <- n1+n2-2#degrees of freedom
     TStat <- (Diff-c)/(s*sqrt((1/n1)+(1/n2)))
@@ -72,7 +73,7 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
          less = {
            pvalue <- pt(q=TStat, df=df)
          })
-  #calculating the confidence interval and prediction intervals for the diference of means
+  #calculating the confidence interval and prediction intervals for the diference of means, and Cohense effect size
   switch(alternative, 
          two.sided = {
            tq <- qt(p=1-(alpha/2), df=df)#quantile of the t-distribution
@@ -81,6 +82,11 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            CIu <- Diff+(tq*sqrt((s^2/n1)+(s2^2/n2)))#upper confidence limit
            PIl <- Diff-(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#lower limit
            PIu <- Diff+(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#upper limit
+           lambdau <- qt(p=1-alpha/2, df=df, ncp=TStat)#upper 95% confidence limit of lambda
+           lambdal <- qt(p=alpha/2, df=df, ncp=TStat)#lower 95% confidence limit of lambda
+           #calculating the confidence limits on delta
+           deltal <- lambdal*sqrt((1/n1)+(1/n2))
+           deltau <- lambdau*sqrt((1/n1)+(1/n2))
          },
          greater = {
            tq <- qt(p=1-(alpha), df=df)#quantile of the t-distribution
@@ -89,6 +95,11 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            CIu <- Inf#Diff+(tq*(s*sqrt((1/n1)+(1/n2))))#upper confidence limit
            PIl <- Diff-(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#lower limit
            PIu <- Inf#Diff+(tq*(sqrt(((var(x)*(n1-1))+ (var(y)*(n2-1)))/(n1+n2-2))*sqrt(2+(1/n1)+(1/n2))))#upper limit
+           lambdau <- NA#qt(p=1-alpha, df=df, ncp=TStat)#upper 95% confidence limit of lambda
+           lambdal <- qt(p=alpha, df=df, ncp=TStat)#lower 95% confidence limit of lambda
+           #calculating the confidence limits on delta
+           deltal <- lambdal*sqrt((1/n1)+(1/n2))
+           deltau <- NA#lambdau*sqrt((1/n1)+(1/n2))
          },
          less = {
            tq <- qt(p=1-alpha, df=df)#quantile of the t-distribution
@@ -97,6 +108,11 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            CIu <- Diff+(tq*sqrt((s^2/n1)+(s2^2/n2)))#upper confidence limit
            PIl <- -Inf#Diff-(tq*(sqrt(((var(x)*(n1-1))+ (var(y)*(n2-1)))/(n1+n2-2))*sqrt(2+(1/n1)+(1/n2))))#lower limit
            PIu <- Diff+(tq*(sqrt(((s^2*(n1))+ (s2^2*(n2)))/(n1+n2))*sqrt(2+(1/n1)+(1/n2))))#upper limit
+           lambdau <- qt(p=1-alpha, df=df, ncp=TStat)#upper 95% confidence limit of lambda
+           lambdal <- NA#qt(p=alpha, df=df, ncp=TStat)#lower 95% confidence limit of lambda
+           #calculating the confidence limits on delta
+           deltal <- NA#lambdal*sqrt((1/n1)+(1/n2))
+           deltau <- lambdau*sqrt((1/n1)+(1/n2))
          })
   
   switch(alternative, 
@@ -178,6 +194,9 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
                         CIu=CIu),
               PI = list(PIl=PIl,
                         PIu=PIu),
+              Cohen=list(Cohenl=deltal,
+                         Cohen=Cohen,
+                         Cohenu=deltau),
               W=list(W=W,
                      Wl=Wl,
                      Wu=Wu),

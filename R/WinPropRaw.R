@@ -68,9 +68,12 @@ WinPropRaw <- function(x, y, alpha=0.05, beta=0.95, c=0, var.equal=TRUE, alterna
               df=outWinPropSum$df,
               CI = outWinPropSum[[5]],
               PI = outWinPropSum[[6]],
-              W =  outWinPropSum[[7]],
-              Cbeta = outWinPropSum[[8]],
-               Phi = outWinPropSum[[9]])
+              Cohen=list(Cohenl=deltal,
+                         Cohen=Cohen,
+                         Cohenu=deltau),
+              W =  outWinPropSum[[8]],
+              Cbeta = outWinPropSum[[9]],
+              Phi = outWinPropSum[[10]])
   class(out) <- "winprop"
   out
 }

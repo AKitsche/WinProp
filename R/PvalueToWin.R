@@ -108,21 +108,30 @@ PvalueToWin <- function(pvalue, n1, n2, alternative=c("two.sided", "greater","le
          })
 
   #output
-  return(list(pvalue=pvalue,
-              n1=n1,
-              n2=n2,
-              delta=list(deltal=deltal,
-                         delta=delta,
-                         deltau=deltau),
-              lambda=list(lambdal=lambdal,
-                          lambda=lambda,
-                          lambdau=lambdau),
+  out <- list(Diff = NA,
+              TStat = tobs,
+              pvalue=pvalue,
+              df = df,
+              CI = list(CIl=NA,
+                        CIu=NA),
+              PI = list(PIl=NA,
+                        PIu=NA),
+              Cohen=list(Cohenl=deltal,
+                         Cohen=delta,
+                         Cohenu=deltau),
+#              lambda=list(lambdal=lambdal,
+#                          lambda=lambda,
+#                          lambdau=lambdau),
               W = list(Wl=Wl,
                        W=W,
                        Wu=Wu),
+              Cbeta = list(Cbetal=NA,
+                           Cbetau=NA),
               Psi = list(Psil=Psil,
                          Psi=Psi,
-                         Psiu=Psiu)))
+                         Psiu=Psiu))
+  class(out) <- "winprop"
+  out
 }
 
 #effect(pvalue=0.05, n1=10,n2=10, alternative="two.sided", alpha=0.05)$W
