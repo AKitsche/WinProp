@@ -99,7 +99,7 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            lambdal <- qt(p=alpha, df=df, ncp=TStat)#lower 95% confidence limit of lambda
            #calculating the confidence limits on delta
            deltal <- lambdal*sqrt((1/n1)+(1/n2))
-           deltau <- NA#lambdau*sqrt((1/n1)+(1/n2))
+           deltau <- -Inf#lambdau*sqrt((1/n1)+(1/n2))
          },
          less = {
            tq <- qt(p=1-alpha, df=df)#quantile of the t-distribution
@@ -111,7 +111,7 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            lambdau <- qt(p=1-alpha, df=df, ncp=TStat)#upper 95% confidence limit of lambda
            lambdal <- NA#qt(p=alpha, df=df, ncp=TStat)#lower 95% confidence limit of lambda
            #calculating the confidence limits on delta
-           deltal <- NA#lambdal*sqrt((1/n1)+(1/n2))
+           deltal <- Inf#lambdal*sqrt((1/n1)+(1/n2))
            deltau <- lambdau*sqrt((1/n1)+(1/n2))
          })
   
@@ -131,6 +131,8 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
              se <- sqrt((s^2/n1)+(s2^2/n2))/sqrt((s^2/m1)+(s2^2/m2))
              Stat <- (X-Y-c)/sqrt((s^2/m1) + (s2^2/m2))
              df <- ((s^2/n1)+(s2^2/n2))^2/(s^4/(n1^2*(n1-1))+s2^4/(n2^2*(n2-1)))
+             deltal <- qt(p=alpha/2, df=df, ncp=Stat) 
+             deltau <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/sqrt((s^2/m1) + (s2^2/m2)))
              Wl <- pnorm(Stat-qt(p=1-alpha/2, df=df)*se)
              Wu <- pnorm(Stat+qt(p=1-alpha/2, df=df)*se)
@@ -143,7 +145,7 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
              df <- n1+n2-2#degrees of freedom
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
              deltal <- qt(p=alpha, df=df, ncp=Stat) 
-             #deltau <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
+             deltau <- Inf#qt(p=1-(alpha/2), df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
              Wl <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
              Wu <- 1#pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau)
@@ -164,7 +166,7 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            if(var.equal==TRUE){
              df <- n1+n2-2#degrees of freedom
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
-             #deltal <- qt(p=alpha/2, df=df, ncp=Stat) 
+             deltal <- -Inf#qt(p=alpha/2, df=df, ncp=Stat) 
              deltau <- qt(p=1-alpha, df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
              Wl <- 0#pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
@@ -175,6 +177,8 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
              se <- sqrt((s^2/n1)+(s2^2/n2))/sqrt((s^2/m1)+(s2^2/m2))
              Stat <- (X-Y-c)/sqrt((s^2/m1) + (s2^2/m2))
              df <- ((s^2/n1)+(s2^2/n2))^2/(s^4/(n1^2*(n1-1))+s2^4/(n2^2*(n2-1)))
+             deltal <- -Inf#qt(p=alpha/2, df=df, ncp=Stat) 
+             deltau <- qt(p=1-alpha, df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/sqrt((s^2/m1) + (s2^2/m2)))
              Wl <- 0#dnorm(Stat-qt(p=alpha/2, df=df)*se)
              Wu <- pnorm(Stat+qt(p=1-alpha, df=df)*se)
