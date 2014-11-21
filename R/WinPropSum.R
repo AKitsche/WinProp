@@ -120,19 +120,19 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            if(var.equal==TRUE){
              df <- n1+n2-2#degrees of freedom
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
-             #deltal <- qt(p=alpha/2, df=df, ncp=Stat) 
-             #deltau <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
+             deltal2 <- qt(p=alpha/2, df=df, ncp=Stat) 
+             deltau2 <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
-             Wl <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
-             Wu <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau)
+             Wl <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal2)
+             Wu <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau2)
              Cbetal <- (X-Y)- (qt(p=1-alpha/2, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
              Cbetau <- (X-Y)+ (qt(p=1-alpha/2, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
            }else{
              se <- sqrt((s^2/n1)+(s2^2/n2))/sqrt((s^2/m1)+(s2^2/m2))
              Stat <- (X-Y-c)/sqrt((s^2/m1) + (s2^2/m2))
              df <- ((s^2/n1)+(s2^2/n2))^2/(s^4/(n1^2*(n1-1))+s2^4/(n2^2*(n2-1)))
-             #deltal <- qt(p=alpha/2, df=df, ncp=Stat) 
-             #deltau <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
+             deltal2 <- qt(p=alpha/2, df=df, ncp=Stat) 
+             deltau2 <- qt(p=1-(alpha/2), df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/sqrt((s^2/m1) + (s2^2/m2)))
              Wl <- pnorm(Stat-qt(p=1-alpha/2, df=df)*se)
              Wu <- pnorm(Stat+qt(p=1-alpha/2, df=df)*se)
@@ -144,10 +144,10 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
            if(var.equal==TRUE){
              df <- n1+n2-2#degrees of freedom
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
-             #deltal <- qt(p=alpha, df=df, ncp=Stat) 
+             deltal2 <- qt(p=alpha, df=df, ncp=Stat) 
              #deltau <- Inf#qt(p=1-(alpha/2), df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
-             Wl <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
+             Wl <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal2)
              Wu <- 1#pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau)
              Cbetal <- (X-Y)- (qt(p=1-alpha, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
              Cbetau <- Inf#(X-Y)+ (qt(p=1-alpha/2, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
@@ -167,10 +167,10 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
              df <- n1+n2-2#degrees of freedom
              Stat <- (X-Y-c)/(s*sqrt((1/n1)+(1/n2)))
              #deltal <- -Inf#qt(p=alpha/2, df=df, ncp=Stat) 
-             #deltau <- qt(p=1-alpha, df=df, ncp=Stat) 
+             deltau2 <- qt(p=1-alpha, df=df, ncp=Stat) 
              W <- pnorm((X-Y-c)/(sqrt(1/m1 + 1/m2)*s))
              Wl <- 0#pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltal)
-             Wu <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau)
+             Wu <- pnorm((sqrt((1/n1)+(1/n2)))/(sqrt((1/m1)+(1/m2)))*deltau2)
              Cbetal <- -Inf#(X-Y)- (qt(p=1-alpha/2, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
              Cbetau <- (X-Y)+ (qt(p=1-alpha, df=df)*(s*sqrt((1/n1)+(1/n2))))-(qnorm(p=beta)*sqrt((s^2/m1) + (s^2/m2)))
            }else{
