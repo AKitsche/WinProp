@@ -53,7 +53,7 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
   alternative <- match.arg(alternative)
   #calculating the t-Teststatistic
   Diff <- X-Y#difference in means
-  Cohen <- Diff/s
+  CohenSize <- Diff/s
   if(var.equal==TRUE){
     df <- n1+n2-2#degrees of freedom
     TStat <- (Diff-c)/(s*sqrt((1/n1)+(1/n2)))
@@ -198,8 +198,8 @@ WinPropSum <- function(X, Y, s, n1, n2, alpha=0.05, beta=0.95, c=0, var.equal=TR
                         CIu=CIu),
               PI = list(PIl=PIl,
                         PIu=PIu),
-              Cohen=list(Cohenl=deltal,
-                         Cohen=Cohen,
+              Cohen=list(Cohen=CohenSize,
+                         Cohenl=deltal,
                          Cohenu=deltau),
               W=list(W=W,
                      Wl=Wl,
