@@ -1,0 +1,104 @@
+---
+title: "Alternative effect size measurements corresponding to the two sample t-test"
+author: "Andreas Kitsche"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: WinProbability.bib
+fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+```{r, echo=FALSE}
+library(knitr)
+options(digits=2)
+```
+If interest is in comparing the means of two (normally distributed) samples it is common practise to perform a two-sample t-test and report the corresponding p-value. Nevertheless, it has been widely criticized that the p-value does not provide a measure for the magnitude of the mean effect (e.g., @Browne2010). 
+This report provides an overview of existing alternatives recently published in the scientific literature that provide a more meaningful measurement of the effect size. @Browne2010 introduced closed form equations to translate a significant t-test p value and sample size into the probability of one treatment being more successful than another on a per individual basis $P(X^{*}>Y^{*})$.
+This term was afterwards denoted as win probability by @Hayter2013 and he demonstrated the interpretation as "*what would happen if a single future observation were to be taken from either of the two treatments, with attention being directed towards which treatment would win by providing the better value.*"
+In addition @Hayter2013 introduced the corresponding confidence interval as well as the odds of X being greater than Y. 
+He further introduced the transformation into Cohens effect size and the corresponding confidence intervals. 
+@Kieser2013 presented a new approach to the assessment of clinical relevance based on the so-called relative effect (or probabilistic index).
+
+
+
+##Example 
+In the depression trial, two groups of patients, one treatment (D) and one placebo (P) group, were compared @Dmitrienko.2005. The primary endpoint was the change from the baseline to the end of the 9-week acute treatment phase in the 17-item Hamilton depression rating scale total score (HAMD17 score). The scores range from -2 to 28, and therefore, we assume that this end-point is approximately normally distributed.
+```{r, echo=FALSE}
+library(poco)
+data(Depression)
+```
+
+```{r, echo=FALSE, fig.cap="In the depression trial, two groups of patients, one treatment and one placebo group, were compared. The primary endpoint was the change from the baseline to the end of the 9-week acute treatment phase in the 17-item Hamilton depression rating scale total score (HAMD17 score).", fig.height=5, fig.width=5}
+boxplot(Score ~ Group, data=Depression, las=1)
+```
+
+The goal is now to calculate different effect size measurements for the comparison of the treatment and the placebo group. Therefore we choose the function `WinPropRaw` from the R add on package `WinProp`.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'}
+#library(devtools)
+#install_github("AKitsche/WinProp")
+library(WinProp)
+#install_github("AKitsche/poco")
+library(poco)
+library(dplyr)
+data(Depression)
+x <- Depression %>% filter(Group=="P") %>%  select(Score)
+y <- Depression %>% filter(Group=="D") %>%  select(Score)
+fm1 <- lm(Score ~  Group,data=Depression)
+predict(fm1, interval=c("prediction"))
+WinPropRaw(x=x$Score, y=y$Score, alpha=0.05, beta=0.95, var.equal=TRUE, alternative="two.sided")
+#see also:
+#t.test(x=x$Score, y=y$Score, var.equal=TRUE)
+```
+
+
+```{r, results='hide', echo=FALSE}
+Results <- WinPropRaw(x=x$Score, y=y$Score, alpha=0.05, beta=0.95, var.equal=TRUE, alternative="two.sided")
+```
+From the p-value of $`r Results[[3]]`$ of the two-sample t-test we can reject the null hypothesis of no treatment effect and conclude a significant treatment effect through the significance level $\alpha$=0.05. A statistically significant difference between the sample means is also concluded from the confidence interval, since it does not contain 0. 
+
+As noted by @Hayter2013 there are arguments against decision making based on the evaluation of the confidence intervals: "*Criticism of this approach has centred on the fact that statistical significance does not necessarily equate to a meaningful difference in practice between the treatment means. In other words, even though the difference between the two treatment means may be statistically significant, the actual magnitude of the difference may not be particularly important,... .*"
+
+```{r, echo=FALSE, fig.width=5, fig.height=3}
+plot(y=0.5, x=Results$Diff, las=1, xlab="treatment effect", ylab="", pch=19, main="Confidence Interval", ylim=c(0.45,0.55),yaxt="n")
+arrows(y0=0.5, y1=0.5, x0=Results[[5]]$CIl, x1=Results[[5]]$CIu, code=3,angle=90)
+```
+
+
+
+```{r, echo=FALSE, fig.width=5, fig.height=3}
+#plot(y=0.5, x=Results$Diff, las=1, xlab="treatment effect", ylab="", pch=19, main="Predicition Interval", xlim=c(-25,10), ylim=c(0.45,0.55),yaxt="n")
+#arrows(y0=0.5, y1=0.5, x0=Results[[6]]$PIl, x1=Results[[6]]$PIu, code=3,angle=90)
+```
+Inferences based on the standardized mean difference $(\mu_{1}-\mu_{2})/\sigma$  (Cohens effect size) provide a 
+
+The value of Cohens effect size is $`r Results[[7]]$Cohen`$ with an interval of $`r Results[[7]]$Cohenl`$-$`r Results[[7]]$Cohenu`$
+
+```{r, echo=FALSE, fig.width=5, fig.height=3}
+plot(y=0.5, x=Results[[7]]$Cohen, las=1, xlab="Cohens effect size", ylab="", pch=19, main="Cohens effect size", xlim=c(-10,0), ylim=c(0.45,0.55),yaxt="n")
+arrows(y0=0.5, y1=0.5, x0=Results[[7]]$Cohenl, x1=Results[[7]]$Cohenu, code=3,angle=90)
+```
+
+@Browne2010 proposed that inference about potential future observations from the treatments provides valuable assistance to the problem of choosing between the two treatments. @Hayter2013 introduced inferences about the difference of potential future observations $X^{*}_{D}$ and $X^{*}_{P}$. He definded Win-probability $P(X^{*}_{D} >  X^{*}_{P})$ which allows a practitioner to consider what would happen if a single future observation were to be taken from either of the two treatments, with attention being directed towards which treatment would win by providing the better value.
+
+The Win-probability introduced by @Hayter2013 directly adresses the question of whether or not an individual´s choice of treatment may have an effect on its hamilton depression score. The 95$\%$ confidence interval for the Win-probability is $P(X^{*}_{D}>X^{*}_{P}) \in$ $(`r Results[[8]]$Wl`$,$`r Results[[8]]$Wu`)$, and since this probability my be less than $50\%$, it can be guaranteed that it is more likely that the dose treatment will be effective. Furthermore, this confidence interval also provides the additional pertinent information that there may be as much as an  $`r Results[[8]]$Wl*100` \%$ chance that the dose treatment will improve an individuals hamilton depression score.
+
+
+```{r, echo=FALSE, fig.width=5, fig.height=3}
+plot(y=0.5, x=Results[[8]]$W, las=1, xlab="Win probability", ylab="", pch=19, main="Win probability", xlim=c(0,1), ylim=c(0.45,0.55),yaxt="n")
+arrows(y0=0.5, y1=0.5, x0=Results[[8]]$Wl, x1=Results[[8]]$Wu, code=3,angle=90)
+```
+
+In addition to the Win-probabilities, @Browne2010 introduced the odds of Win-probabilities $W/(1-W)$. The $95\%$ lower and upper confidence limit for the odds are given by $`r Results[[10]]$Phil`$ and $`r Results[[10]]$Phiu`$
+
+```{r, echo=FALSE, fig.width=5, fig.height=3}
+plot(y=0.5, x=Results[[10]]$Phi, las=1, xlab="Odds W/(1-W)", ylab="", pch=19, main="Odds W/(1-W)", xlim=c(0,1), ylim=c(0.45,0.55),yaxt="n")
+arrows(y0=0.5, y1=0.5, x0=Results[[10]]$Phil, x1=Results[[10]]$Phiu, code=3,angle=90)
+```
+
+
+
+
+##References
