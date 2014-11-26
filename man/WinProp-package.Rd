@@ -7,6 +7,8 @@ Calculate Win Probabilities and the corresponding confidence intervals
 }
 \description{
 This R package provides the functionality to calculate Win Probabilities and the corresponding confidence intervals. In addition, the confidence intervals for the critical value  with a given chance that treatment one is different from treatment two.
+
+To browse the vignette in a browser use \code{browseVignettes("WinProp")}
 }
 \details{
 \tabular{ll}{
