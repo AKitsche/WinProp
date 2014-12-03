@@ -7,7 +7,7 @@
 #sigma - standard deviation
 #delta - difference in expectation
 #beta - type-II error
-Nrel <- function(nrel_start, phi, sigma, delta, beta){
+Nrel <- function(nrel_start, phi, sigma, delta, beta, alpha=0.05){
   #checks
   if(phi <= 0.5) {
     stop("phi must be a single numeric value greater than 0.5")
@@ -21,7 +21,9 @@ Nrel <- function(nrel_start, phi, sigma, delta, beta){
   if(nrel_start < 0 ) {
     stop("nrel_start must be a positive numeric value")
   }
-  
+  if(alpha < 0 || alpha > 1) {
+    stop("alpha must be a numeric value between 0 and 1")
+  }
   #iteratively searching the sample size until condition nrel_start=nrel is fulfilled
   #formula corresponds to Eq. 2 in Kieser et al. (2012)
   d <- 1
@@ -35,11 +37,16 @@ Nrel <- function(nrel_start, phi, sigma, delta, beta){
     #  nrel2 <- (qnorm(1-alphaRel) + qnorm(1-beta))^2 * (1/(qnorm(thetaHat)^2))
     #  nrel
     d <- nrel - nrel_start
-  }
-  return(list(nrel=as.integer(round(nrel,0)),
+  }#calculating required sample size per group for demonstrating statistical significance
+  nsig <- 2 * (qnorm(1-alpha) + qnorm(1-beta))^2 * (sigma/delta)^2
+  out <- list(nrel=as.integer(round(nrel,0)),
+              nsig=as.integer(round(nsig,0)),
               phi=phi, 
               sigma=sigma, 
               delta=delta, 
+              alpha=alpha,
               beta=beta,
-              power=1-beta))
+              power=1-beta)
+  class(out) <- "SampleSize"
+  out
 }
