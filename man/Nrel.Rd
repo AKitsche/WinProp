@@ -5,7 +5,7 @@
 Function to calculate sample size per group required to observe a relative effect of at least phi
 }
 \description{
-The function calculates the sample size per group required to observe a relative effect of at least phi with probability 1-beta, if the approximate sample size formula for the t-test is used. The sample size is caluculated by iteratively searching for n according to Equation (2) in Kieser et al. (2013).
+The function calculates the sample size per group required to observe a relative effect of at least phi with probability 1-beta, if the approximate sample size formula for the t-test is used. The sample size is caluculated by iteratively searching for n according to Equation (2) in Kieser et al. (2013). The relative effect phi defines a population measure on the original scale but also includes a success criterion for the individual patients.
 }
 \usage{
 Nrel(nrel_start, phi, sigma, delta, beta)
@@ -27,6 +27,9 @@ difference in expectation
   \item{beta}{
 type-II error rate
 }
+  \item{alpha}{
+  type-I error rate for sample size  calculation to achieve significance
+  }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -35,10 +38,12 @@ type-II error rate
 
 %%  ~Describe the value returned
 %%  If it is a LIST, use
-\item{nrel}{per group sample size}
-\item{phi}{relative effect phi}
+\item{nrel}{per group sample size to claim clinical relevance}
+\item{nsig}{per group sample size to claim significant effect}
+\item{phi}{prespecified minimum relative effect phi}
 \item{sigma}{standard deviation}
 \item{delta}{difference in expectation}
+\item{theta}{estimated relative effect, theta= Phi((delta/sigma)/sqrt(2)), where Phi is the standard normal distribution}
 \item{beta}{type-II error rate}
 \item{power}{1-beta}
 }
@@ -58,7 +63,7 @@ Andreas Kitsche
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-Nrel(nrel_start=100, phi=0.7, sigma=10, delta=-10, beta=0.1)
+Nrel(nrel_start=100, phi=0.7, sigma=10, delta=-10, beta=0.1, sigma=0.05)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -31,7 +31,7 @@ Nrel <- function(nrel_start, phi, sigma, delta, beta, alpha=0.05){
   while(abs(d) > 0.001){
     nrel_start <- nrel
     alphaRel <- 1-pnorm(sqrt(nrel_start)*qnorm(phi))
-    
+
     if(alphaRel == 0){
       stop("alpha_rel reached infinity. Sample size to observe a relative effect of at least phi P(X > Y) numerically not available")
     }
@@ -45,11 +45,13 @@ Nrel <- function(nrel_start, phi, sigma, delta, beta, alpha=0.05){
     
   }#calculating required sample size per group for demonstrating statistical significance
   nsig <- 2 * (qnorm(1-alpha) + qnorm(1-beta))^2 * (sigma/delta)^2
-  out <- list(nrel=as.integer(round(nrel,0)),
-              nsig=as.integer(round(nsig,0)),
+  theta <- dnorm((delta/sigma)/sqrt(2))
+  out <- list(nrel=ceiling(nrel),
+              nsig=ceiling(nsig),
               phi=phi, 
               sigma=sigma, 
               delta=delta, 
+              theta=theta,
               alpha=alpha,
               beta=beta,
               power=1-beta)
