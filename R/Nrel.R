@@ -45,7 +45,7 @@ Nrel <- function(nrel_start, phi, sigma, delta, beta, alpha=0.05){
     
   }#calculating required sample size per group for demonstrating statistical significance
   nsig <- 2 * (qnorm(1-alpha) + qnorm(1-beta))^2 * (sigma/delta)^2
-  theta <- dnorm((delta/sigma)/sqrt(2))
+  theta <- 1-dnorm((delta/sigma)/sqrt(2))
   out <- list(nrel=ceiling(nrel),
               nsig=ceiling(nsig),
               phi=phi, 
